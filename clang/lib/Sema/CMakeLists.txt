@@ -24,6 +24,7 @@ add_clang_library(clangSema
   ScopeInfo.cpp
   Sema.cpp
   SemaAccess.cpp
+  SemaApprox.cpp
   SemaAttr.cpp
   SemaAvailability.cpp
   SemaCXXScopeSpec.cpp
