@@ -19,6 +19,7 @@ clang_tablegen(AttrDocTable.inc -gen-clang-attr-doc-table
   TARGET ClangAttrDocTable)
 
 add_clang_library(clangAST
+  ApproxClause.cpp
   APValue.cpp
   ASTConcept.cpp
   ASTConsumer.cpp
