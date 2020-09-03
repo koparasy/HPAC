@@ -148,6 +148,8 @@ CodeGenModule::CodeGenModule(ASTContext &C, const HeaderSearchOptions &HSO,
     createCUDARuntime();
   if (LangOpts.HLSL)
     createHLSLRuntime();
+  if(LangOpts.Approx)
+    createApproxRuntime();
 
   // Enable TBAA unless it's suppressed. ThreadSanitizer needs TBAA even at O0.
   if (LangOpts.Sanitize.has(SanitizerKind::Thread) ||
@@ -215,6 +217,10 @@ CodeGenModule::CodeGenModule(ASTContext &C, const HeaderSearchOptions &HSO,
 }
 
 CodeGenModule::~CodeGenModule() {}
+
+void CodeGenModule::createApproxRuntime(){
+  ApproxRuntime.reset(new CGApproxRuntime(*this));
+}
 
 void CodeGenModule::createObjCRuntime() {
   // This is just isGNUFamily(), but we want to force implementors of

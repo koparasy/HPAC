@@ -157,6 +157,7 @@ namespace clang {
     void VisitOMPDeclareReductionDecl(OMPDeclareReductionDecl *D);
     void VisitOMPDeclareMapperDecl(OMPDeclareMapperDecl *D);
     void VisitOMPCapturedExprDecl(OMPCapturedExprDecl *D);
+    void VisitApproxCapturedExprDecl(ApproxCapturedExprDecl *D);
 
     /// Add an Objective-C type parameter list to the given record.
     void AddObjCTypeParamList(ObjCTypeParamList *typeParams) {
@@ -1906,6 +1907,10 @@ void ASTDeclWriter::VisitOMPCapturedExprDecl(OMPCapturedExprDecl *D) {
   Code = serialization::DECL_OMP_CAPTUREDEXPR;
 }
 
+void ASTDeclWriter::VisitApproxCapturedExprDecl(ApproxCapturedExprDecl *D){
+  VisitVarDecl(D);
+  Code = serialization::DECL_APPROX_CAPTUREDEXPR;
+}
 //===----------------------------------------------------------------------===//
 // ASTWriter Implementation
 //===----------------------------------------------------------------------===//
