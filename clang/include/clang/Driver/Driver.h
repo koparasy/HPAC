@@ -135,6 +135,7 @@ public:
     OMPRT_IOMP5
   };
 
+
   // Diag - Forwarding function for diagnostics.
   DiagnosticBuilder Diag(unsigned DiagID) const {
     return Diags.Report(DiagID);
