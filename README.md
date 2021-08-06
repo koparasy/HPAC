@@ -40,7 +40,6 @@ To build the HPAC compiler and all the infrastructure please execute the followi
 ```bash
 git clone git@github.com:koparasy/HPAC.git
 cd HPAC
-git checkout sc-dev 
 ./setup.sh 'PREFIX' 'NUM THREADS' 
 ```
 
