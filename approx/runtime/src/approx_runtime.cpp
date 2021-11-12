@@ -31,6 +31,9 @@ using namespace std;
 #define MEMO_IN 1
 #define MEMO_OUT 2
 
+#define PETRUBATE_IN 1
+#define PETRUBATE_OUT 2
+
 #define RAND_SIZE  10000
 
 float __approx_perfo_rate__;
@@ -107,6 +110,14 @@ public:
       __approx_perfo_rate__ = perfoRate;
     }
 
+    env_p = std::getenv("PETRUBATE_TYPE");
+    if (env_p) {
+      const char *type = env_p;
+      env_p = std::getenv("PETRUBATE_FILE");
+      const char *fName = env_p; 
+      register_petrubate(fName, type);
+    }
+
  // This is not the optimal way. Since, we will 
  // always use the same random numbers.
     int numThreads = 32; //omp_get_max_threads();
@@ -121,9 +132,10 @@ public:
 
   ~ApproxRuntimeConfiguration(){
     delete [] randomNumbers;
+    deinitPetrubate();
   }
 
-   ExecuteMode getMode(){return Mode;}
+  ExecuteMode getMode(){return Mode;}
 
   bool getExecuteBoth(){ return ExecuteBoth; }
 
@@ -157,11 +169,15 @@ bool __approx_skip_iteration(unsigned int i, float pr) {
 
 void __approx_exec_call(void (*accurateFN)(void *), void (*perfoFN)(void *),
                         void *arg, bool cond, const char *region_name,
-                        void *perfoArgs, int memo_type, void *inputs,
+                        void *perfoArgs, int memo_type, int petru_type, void *inputs,
                         int num_inputs, void *outputs, int num_outputs) {
   approx_perfo_info_t *perfo = (approx_perfo_info_t *)perfoArgs;
   approx_var_info_t *input_vars = (approx_var_info_t *)inputs;
   approx_var_info_t *output_vars = (approx_var_info_t *)outputs;
+
+  if (petru_type & PETRUBATE_IN){
+    petrubate(accurateFN, input_vars, num_inputs, region_name);
+  }
 
   if ( perfoFN ){
       perforate(accurateFN, perfoFN, arg, input_vars, num_inputs, output_vars, num_outputs, RTEnv.getExecuteBoth());
@@ -173,7 +189,12 @@ void __approx_exec_call(void (*accurateFN)(void *), void (*perfoFN)(void *),
   } else {
     accurateFN(arg);
   }
+
+  if (petru_type & PETRUBATE_OUT){
+    petrubate(accurateFN, output_vars, num_outputs, region_name);
+  }
 }
+
 
 const float approx_rt_get_percentage(){
   return RTEnv.perfoRate;

@@ -42,6 +42,7 @@ enum ClauseKind : uint {
   CK_OUT,
   CK_INOUT,
   CK_LABEL,
+  CK_PETRUBATE,
   CK_END
 };
 
@@ -65,6 +66,15 @@ enum MemoType : uint {
 };
 
 const unsigned MT_START = MT_IN;
+
+enum PetrubateType: uint {
+  PETRUBATE_IN = 0,
+  PETRUBATE_OUT,
+  PETRUBATE_INOUT,
+  PETRUBATE_END
+};
+
+const unsigned PETRUBATE_START = PETRUBATE_IN;
 
 struct ApproxVarListLocTy {
   SourceLocation StartLoc;

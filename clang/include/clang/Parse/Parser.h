@@ -3218,6 +3218,7 @@ private:
 
   ParseApproxClauseFn ParseApproxPerfoClause;
   ParseApproxClauseFn ParseApproxMemoClause;
+  ParseApproxClauseFn ParseApproxPetrubateClause;
   ParseApproxClauseFn ParseApproxDTClause;
   ParseApproxClauseFn ParseApproxNNClause;
   ParseApproxClauseFn ParseApproxUserClause;

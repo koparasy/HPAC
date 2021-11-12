@@ -11,6 +11,7 @@ set(LIBAPPROX_SOURCE_FILES
     approx_memoize_out.cpp
     approx_memoize_iact_in.cpp
     approx_perforate.cpp
+    approx_petrubate.cpp
 )
 
 include_directories(
@@ -21,9 +22,13 @@ include_directories(
 )
 
 
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+
 #We might need to use CXX as linker.
 set(LIBAPPROX_LINKER_LANGUAGE C)
 add_library(approx ${LIBAPPROX_LIBRARY_KIND} ${LIBAPPROX_SOURCE_FILES})
+
+find_package(nlohmann_json 3.2.0 REQUIRED)
 
 set_target_properties(approx PROPERTIES
     PREFIX "" SUFFIX "" OUTPUT_NAME "${LIBAPPROX_LIB_FILE}"
@@ -31,6 +36,7 @@ set_target_properties(approx PROPERTIES
     LINKER_LANGUAGE ${LIBAPPROX_LINKER_LANGUAGE})
 
 target_link_libraries(approx PRIVATE ${CMAKE_DL_LIBS})
+target_link_libraries(approx PRIVATE nlohmann_json::nlohmann_json)
 
 message("PACKAGE VERSION is: ${PACKAGE_VERSION}")
 string(REGEX MATCH "[0-9]+\\.[0-9]+(\\.[0-9]+)?" CLANG_VERSION ${PACKAGE_VERSION})

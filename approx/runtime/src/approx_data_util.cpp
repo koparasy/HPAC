@@ -14,9 +14,13 @@
 #include <cmath>
 #include <iostream>
 #include <stdint.h>
+#include <random>
+#include <omp.h>
 
 #include "approx_data_util.h"
 #include "approx_internal.h"
+
+std::default_random_engine generator;
 
 /**
  * add vectors and store output to another vector.
@@ -165,6 +169,33 @@ void divide(void *quotient, void *dividend, void *divisor, ApproxType Type,
   }
 }
 
+void petrubate_var(void *ptr, ApproxType Type,
+            size_t numElements, double error) {
+  if (numElements == 1) {
+    switch (Type) {
+#define APPROX_TYPE(Enum, CType, nameOfType)                                   \
+  case Enum:                                                                   \
+    (*(CType *)ptr) = (*(CType *) ptr) + ((CType) (((double) (*(CType *)ptr))*error));\
+    return;
+#include "clang/Basic/approxTypes.def"
+    case INVALID:
+      std::cout << "INVALID DATA TYPE passed in argument list\n";
+      break;
+    }
+  } else {
+    switch (Type) {
+#define APPROX_TYPE(Enum, CType, nameOfType)                                   \
+  case Enum:                                                                   \
+    return petrubate((CType *) ptr, numElements, error);
+#include "clang/Basic/approxTypes.def"
+    case INVALID:
+      std::cout << "INVALID DATA TYPE passed in argument list\n";
+      break;
+    }
+  }
+}
+
+
 /**
  * Function returing a printable representation of the specified type.
  *
@@ -284,4 +315,62 @@ float aggregate( void *data, size_t numElements, ApproxType Type){
       break;
     }
   return 0.0f;
+}
+
+void abs_error_var(void *ptr, ApproxType Type,
+            size_t numElements, double error) {
+  if (numElements == 1) {
+    switch (Type) {
+#define APPROX_TYPE(Enum, CType, nameOfType)                                   \
+  case Enum:                                                                   \
+    (*(CType *)ptr) = (*(CType *) ptr) + ((CType)error);\
+    return;
+#include "clang/Basic/approxTypes.def"
+    case INVALID:
+      std::cout << "INVALID DATA TYPE passed in argument list\n";
+      break;
+    }
+  } else {
+    switch (Type) {
+#define APPROX_TYPE(Enum, CType, nameOfType)                                   \
+  case Enum:                                                                   \
+    return abs_error((CType *) ptr, numElements, error);
+#include "clang/Basic/approxTypes.def"
+    case INVALID:
+      std::cout << "INVALID DATA TYPE passed in argument list\n";
+      break;
+    }
+  }
+}
+
+void dist_error_var(void *ptr, ApproxType Type,
+            size_t numElements, double avg) {
+  std::normal_distribution<double> distribution(avg,avg/2.0);
+  if (numElements == 1) {
+    double error;
+    switch (Type) {
+#define APPROX_TYPE(Enum, CType, nameOfType)                                   \
+  case Enum:                                                                   \
+    error = distribution(generator);                                           \
+    if (error > avg){                                                          \
+      error += -2*avg;                                                         \
+    }                                                                          \
+    (*(CType *)ptr) = (*(CType *) ptr) + ((CType)error);                       \
+    return;
+#include "clang/Basic/approxTypes.def"
+    case INVALID:
+      std::cout << "INVALID DATA TYPE passed in argument list\n";
+      break;
+    }
+  } else {
+    switch (Type) {
+#define APPROX_TYPE(Enum, CType, nameOfType)                                   \
+  case Enum:                                                                   \
+    return dist_error((CType *) ptr, numElements, distribution, generator, avg);
+#include "clang/Basic/approxTypes.def"
+    case INVALID:
+      std::cout << "INVALID DATA TYPE passed in argument list\n";
+      break;
+    }
+  }
 }

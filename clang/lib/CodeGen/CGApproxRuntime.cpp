@@ -194,6 +194,8 @@ static void getVarInfoType(ASTContext &C, QualType &VarInfoTy) {
     VarInfoRD->startDefinition();
     /// Void pointer pointing to data values
     addFieldToRecordDecl(C, VarInfoRD, C.getIntPtrType());
+    /// Void pointer pointing to the names of the variables
+    addFieldToRecordDecl(C, VarInfoRD, C.getIntPtrType());
     QualType SizeOfType = C.getSizeType();
     SizeOfType = C.getCanonicalType(SizeOfType);
     /// number of elements
@@ -236,6 +238,7 @@ CGApproxRuntime::CGApproxRuntime(CodeGenModule &CGM)
        /* Label Name */ CharPtrTy,
        /* Perfo Description */ CGM.VoidPtrTy,
        /* Memoization Type*/ CGM.Int32Ty,
+       /* Petrubation Type*/ CGM.Int32Ty,
        /* Input Data Descr*/ CGM.VoidPtrTy,
        /* Input Data Num Elements*/ CGM.Int32Ty,
        /* Ouput Data Descr. */ CGM.VoidPtrTy,
@@ -286,6 +289,8 @@ void CGApproxRuntime::CGApproxRuntimeEnterRegion(CodeGenFunction &CGF,
   approxRTParams[DataSizeOut] =
       llvm::ConstantInt::get(CGF.Builder.getInt32Ty(), 0);
   approxRTParams[MemoDescr] =
+      llvm::ConstantInt::get(CGF.Builder.getInt32Ty(), 0);
+  approxRTParams[PetruDescr] =
       llvm::ConstantInt::get(CGF.Builder.getInt32Ty(), 0);
 
   StartLoc = CS.getBeginLoc();
@@ -341,6 +346,23 @@ void CGApproxRuntime::CGApproxRuntimeEmitPerfoInit(
   /// Emit Function which needs to be perforated.
   CGApproxRuntimeEmitPerfoFn(CS, LoopExprs, PerfoClause);
 }
+
+void CGApproxRuntime::CGApproxRuntimeEmitPetrubateInit(
+    CodeGenFunction &CGF, ApproxPetrubateClause &PetrubateClause) {
+  requiresData = true;
+  if (PetrubateClause.getPetrubateType() == approx::PETRUBATE_IN) {
+    requiresInputs = true;
+    approxRTParams[PetruDescr] =
+        llvm::ConstantInt::get(CGF.Builder.getInt32Ty(), 1);
+  } else if (PetrubateClause.getPetrubateType() == approx::PETRUBATE_OUT) {
+    approxRTParams[PetruDescr] =
+        llvm::ConstantInt::get(CGF.Builder.getInt32Ty(), 2);
+  } else if (PetrubateClause.getPetrubateType() == approx::PETRUBATE_INOUT) {
+    approxRTParams[PetruDescr] =
+        llvm::ConstantInt::get(CGF.Builder.getInt32Ty(), 3);
+  }
+}
+
 
 void CGApproxRuntime::CGApproxRuntimeEmitMemoInit(
     CodeGenFunction &CGF, ApproxMemoClause &MemoClause) {
@@ -639,6 +661,15 @@ void CGApproxRuntime::CGApproxRuntimeRegisterInputsOutputs(
   }
 }
 
+llvm::Constant* CGApproxRuntime::getOrCreateName(StringRef Name, CodeGenFunction& CGF){
+  llvm::Constant *&NameStr = NameToConstant[Name]; 
+  if ( !NameStr ){
+    Constant *Init = ConstantDataArray::getString(CGM.getLLVMContext(), Name, false);
+    NameStr = CGF.Builder.CreateGlobalString(Name);
+  }
+  return NameStr;
+}
+
 std::pair<llvm::Value *, llvm::Value *>
 CGApproxRuntime::CGApproxRuntimeEmitData(
     CodeGenFunction &CGF,
@@ -658,7 +689,7 @@ CGApproxRuntime::CGApproxRuntimeEmitData(
 
   const auto *VarInfoRecord = VarInfoTy->getAsRecordDecl();
   unsigned Pos = 0;
-  enum VarInfoFieldID { PTR, NUM_ELEM, SZ_ELEM, DATA_TYPE, DIR };
+  enum VarInfoFieldID { PTR, VAR_NAME, NUM_ELEM, SZ_ELEM, DATA_TYPE, DIR };
 
   for (auto P : Data) {
     llvm::Value *Addr;
@@ -667,6 +698,7 @@ CGApproxRuntime::CGApproxRuntimeEmitData(
     llvm::Value *SizeOfElement;
     Expr *E = P.first;
     Directionality Dir = P.second;
+    
     std::tie(Addr, NumElements, SizeOfElement, TypeOfElement) =
         getPointerAndSize(CGF, E);
     // Store Addr
@@ -676,6 +708,18 @@ CGApproxRuntime::CGApproxRuntimeEmitData(
     LValue BaseAddrLVal = CGF.EmitLValueForField(Base, FieldT);
     CGF.EmitStoreOfScalar(CGF.Builder.CreatePtrToInt(Addr, CGF.IntPtrTy),
                           BaseAddrLVal);
+
+    // Store VAR_NAME
+    std::string ExprName = "";
+    PrintingPolicy Policy(C.getLangOpts());
+    llvm::raw_string_ostream OS(ExprName);
+    E->printPretty(OS,nullptr,Policy);
+    OS.flush();
+    Value *nameAddr =  CGF.Builder.CreateGlobalStringPtr(ExprName.c_str());
+    LValue nameLVal = CGF.EmitLValueForField(
+        Base, *std::next(VarInfoRecord->field_begin(), VAR_NAME));
+    CGF.EmitStoreOfScalar(CGF.Builder.CreatePtrToInt(nameAddr, CGF.IntPtrTy),
+                          nameLVal);
 
     // Store NUM_ELEMENTS
     LValue nElemLVal = CGF.EmitLValueForField(

@@ -170,6 +170,46 @@ public:
   Stmt *getPreInit() { return PreInit; }
 };
 
+class ApproxPetrubateClause final : public ApproxClause {
+  approx::PetrubateType Type;
+  SourceLocation LParenLoc;
+public:
+  static const std::string PetrubateName[approx::PETRUBATE_END];
+  /// \param StartLoc Starting location of the clause.
+  /// \param EndLoc Ending location of the clause.
+  ApproxPetrubateClause(approx::PetrubateType PT, SourceLocation StartLoc,
+                    SourceLocation EndLoc, SourceLocation LParenLoc)
+      :ApproxClause(approx::CK_PETRUBATE, StartLoc, EndLoc), Type(PT), LParenLoc(LParenLoc){}
+
+  /// Build an empty clause.
+  ApproxPetrubateClause()
+      : ApproxClause(approx::CK_PETRUBATE, SourceLocation(), SourceLocation()) {}
+
+  child_range children() {
+    return child_range(child_iterator(), child_iterator());
+  }
+
+  const_child_range children() const {
+    return const_child_range(const_child_iterator(), const_child_iterator());
+  }
+
+  child_range used_children() {
+    return child_range(child_iterator(), child_iterator());
+  }
+  const_child_range used_children() const {
+    return const_child_range(const_child_iterator(), const_child_iterator());
+  }
+
+  static bool classof(const ApproxClause *T) {
+    return T->getClauseKind() == approx::CK_PETRUBATE;
+  }
+
+  std::string getPetrubateTypeAsString() const {return PetrubateName[Type];}
+  approx::PetrubateType getPetrubateType() const {return Type;}
+};
+
+
+
 class ApproxMemoClause final : public ApproxClause {
   approx::MemoType Type;
   SourceLocation LParenLoc;
@@ -619,6 +659,7 @@ class ApproxClausePrinter final : public ApproxClauseVisitor<ApproxClausePrinter
     void VisitApproxOutClause(ApproxOutClause *S);
     void VisitApproxInOutClause(ApproxInOutClause *S);
     void VisitApproxLabelClause(ApproxLabelClause *S);
+    void VisitApproxPetrubateClause(ApproxPetrubateClause *S);
 };
 
 } // namespace clang

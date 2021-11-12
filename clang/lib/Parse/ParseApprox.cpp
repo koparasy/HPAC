@@ -45,6 +45,17 @@ static bool isMemoType(Token &Tok, MemoType &Kind) {
   return false;
 }
 
+static bool isPetrubateType(Token &Tok, PetrubateType &Kind) {
+  for (unsigned i = PETRUBATE_START ; i < PETRUBATE_END; i++) {
+    enum PetrubateType PT = (enum PetrubateType) i;
+    if (Tok.getIdentifierInfo()->getName().equals(ApproxPetrubateClause::PetrubateName[PT])) {
+      Kind = PT;
+      return true;
+    }
+  }
+  return false;
+}
+
 bool Parser::ParseApproxVarList(SmallVectorImpl<Expr *> &Vars,
                                 SourceLocation &ELoc) {
   BalancedDelimiterTracker T(*this, tok::l_paren, tok::annot_pragma_approx_end);
@@ -108,6 +119,28 @@ ApproxClause *Parser::ParseApproxPerfoClause(ClauseKind CK) {
 
   return Actions.ActOnApproxPerfoClause(CK, PT, Locs, Val.get());
 }
+
+ApproxClause *Parser::ParseApproxPetrubateClause(ClauseKind CK) {
+  SourceLocation Loc = Tok.getLocation();
+  SourceLocation LParenLoc = ConsumeAnyToken();
+  BalancedDelimiterTracker T(*this, tok::l_paren, tok::annot_pragma_approx_end);
+  if (T.expectAndConsume(diag::err_expected_lparen_after, ApproxClause::Name[CK].c_str()))
+    return nullptr;
+
+  PetrubateType PT;
+  if (!isPetrubateType(Tok, PT)){
+    return nullptr;
+  }
+  /// Consume Memo Type
+  ConsumeAnyToken();
+
+  SourceLocation ELoc = Tok.getLocation();
+  if (!T.consumeClose())
+    ELoc = T.getCloseLocation();
+  ApproxVarListLocTy Locs(Loc, LParenLoc, ELoc);
+  return Actions.ActOnApproxPetrubateClause(CK, PT, Locs);
+}
+
 
 ApproxClause *Parser::ParseApproxMemoClause(ClauseKind CK) {
   SourceLocation Loc = Tok.getLocation();

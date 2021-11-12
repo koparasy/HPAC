@@ -19,7 +19,8 @@
 .*.sw?
 .sw?
 #OS X specific files.
-.DS_store
+*.DS_store
+*.pkl
 
 # Nested build directory
 /build*
@@ -60,3 +61,8 @@ autoconf/autom4te.cache
 /clang/utils/analyzer/projects/*/PatchedSource
 /clang/utils/analyzer/projects/*/ScanBuildResults
 /clang/utils/analyzer/projects/*/RefScanBuildResults
+/approx/approx_utilities/
+/*.sh
+*.o
+*.ll
+*.log

@@ -40,6 +40,7 @@ enum ApproxRTArgsIndex : uint {
   Label,
   PerfoDesc,
   MemoDescr,
+  PetruDescr,
   DataDescIn,
   DataSizeIn,
   DataDescOut,
@@ -67,6 +68,7 @@ private:
   /// of this region.
   ///    typedef struct approx_var_info_t{
   ///        void* ptr;         // Ptr to data
+  ///        void* var_name;    // Name of the variable
   ///        size_t num_elem;   // Number of elements
   ///        size_t sz_elem;    // Size of elements in bytes
   ///        int8_t data_type; // Type of data float/double/int etc.
@@ -85,6 +87,7 @@ private:
   SourceLocation EndLoc;
   bool requiresData;
   bool requiresInputs;
+  llvm::StringMap<llvm::Constant*> NameToConstant;
 
 private:
   void CGApproxRuntimeEmitPerfoFn(CapturedStmt &CS, const ApproxLoopHelperExprs &LoopExprs, const ApproxPerfoClause &PC);
@@ -97,6 +100,8 @@ public:
                                     ApproxPerfoClause &PerfoClause, const ApproxLoopHelperExprs &LoopExprs);
   void CGApproxRuntimeEmitMemoInit(CodeGenFunction &CGF,
                                    ApproxMemoClause &MemoClause);
+  void CGApproxRuntimeEmitPetrubateInit(CodeGenFunction &CGF,
+                                   ApproxPetrubateClause &PetrubateClause);
   void CGApproxRuntimeEmitIfInit(CodeGenFunction &CGF,
                                  ApproxIfClause &IfClause);
   void CGApproxRuntimeEmitLabelInit(CodeGenFunction &CGF, ApproxLabelClause &LabelCluse);
@@ -105,6 +110,7 @@ public:
   void CGApproxRuntimeRegisterOutputs(ApproxOutClause &OutClause);
   void CGApproxRuntimeRegisterInputsOutputs(ApproxInOutClause &InOutClause);
   void CGApproxRuntimeEmitDataValues(CodeGenFunction &CG);
+  llvm::Constant* getOrCreateName(StringRef Name, CodeGenFunction &CGF);
 };
 
 } // namespace CodeGen

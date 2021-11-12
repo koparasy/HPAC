@@ -18,6 +18,7 @@
 #include <iostream>
 #include <stdint.h>
 #include <cstring>
+#include <random>
 
 #include "approx_internal.h"
 
@@ -57,6 +58,44 @@ template <typename T>
  void divide(T *quotient, T *dividend, T *divisor, size_t numElements) {
   for (size_t i = 0; i < numElements; i++) {
     quotient[i] = dividend[i] / divisor[i];
+  }
+  return;
+}
+
+template <typename T>
+ void petrubate(T *ptr, size_t numElements, double error) {
+  if (omp_in_parallel()){
+    for (size_t i = 0; i < numElements; i++) {
+      ptr[i] = ptr[i] + (T)(error* (double)(ptr[i]));
+    }
+  }
+  else{
+#pragma omp parallel for firstprivate(error) shared(ptr)
+    for (size_t i = 0; i < numElements; i++) {
+      ptr[i] = ptr[i] + (T)(error* (double)(ptr[i]));
+    }
+  }
+  return;
+}
+
+template <typename T>
+ void abs_error(T *ptr, size_t numElements, double error) {
+  for (size_t i = 0; i < numElements; i++) {
+    ptr[i] = ptr[i] + (T)(error);
+  }
+  return;
+}
+
+template <typename T>
+ void dist_error(T *ptr, size_t numElements, 
+    std::normal_distribution<double>& distribution,
+    std::default_random_engine &generator, double avg){
+  for (size_t i = 0; i < numElements; i++) {
+    double error = distribution(generator);
+    if (error > avg){
+      error += -2*avg;
+    }
+    ptr[i] = ptr[i] + (T)(error* (double)(ptr[i]));
   }
   return;
 }
@@ -238,6 +277,12 @@ void multiply(void *product, void *multiplier, void *multiplicand,
               ApproxType Type, size_t numElements);
 void divide(void *quotient, void *dividend, void *divisor, ApproxType Type,
             size_t numElements);
+void petrubate_var(void *ptr, ApproxType Type,
+            size_t numElements, double error);
+void abs_error_var(void *ptr, ApproxType Type,
+            size_t numElements, double error);
+void dist_error_var(void *ptr, ApproxType Type,
+            size_t numElements, double error);
 
 const char *getTypeName(ApproxType Type);
 bool rel_error_larger(void *ground, void *test, size_t numElements,

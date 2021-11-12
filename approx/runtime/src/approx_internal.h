@@ -58,6 +58,7 @@ typedef struct approx_perfo_info_t {
  */
 typedef struct approx_var_info_t {
   void *ptr;
+  char *name;
   size_t num_elem;
   size_t sz_elem;
   int8_t data_type;
@@ -82,6 +83,10 @@ void perforate(void (*accurate)(void *), void (*perfo)(void *),
                  void *args, approx_var_info_t *input_vars, 
                  int num_inputs, approx_var_info_t *output_vars,
                  int num_outputs, bool ExecuteBoth);
+
+void petrubate(void (*accurate)(void *), approx_var_info_t *arguments, int num_arguments, const char *label);
+void register_petrubate(const char *fName, const char *type);
+void deinitPetrubate();
 
 int getPredictionSize();
 int getHistorySize();
