@@ -1,0 +1,8 @@
+all:
+  exponent_space: False
+  lower_bound: -1
+  upper_bound:  1
+  base: 2
+  max_error: -10
+  error_direction: 'Both'
+

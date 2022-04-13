@@ -1,0 +1,42 @@
+all:
+  exponent_space: True
+  lower_bound: -28
+  upper_bound:  28
+  base: 2
+  max_error: -10
+  error_direction: 'Both'
+CNDF1:
+  exponent_space: True
+  lower_bound: -24
+  upper_bound:  24
+  base: 2
+  max_error: 0
+  error_direction: 'Both'
+CNDF2:
+  exponent_space: True
+  lower_bound: -24
+  upper_bound:  24
+  base: 2
+  max_error: 0
+  error_direction: 'Both'
+LOG:
+  exponent_space: True
+  lower_bound: -26
+  upper_bound:  26
+  base: 2
+  max_error: -2
+  error_direction: 'Both'
+SQRT:
+  exponent_space: True
+  lower_bound: -20
+  upper_bound:  20
+  base: 2
+  max_error: -4
+  error_direction: 'Both'
+EXP:
+  exponent_space: True
+  lower_bound: -10
+  upper_bound:  10
+  base: 2
+  max_error: -14
+  error_direction: 'Both'
