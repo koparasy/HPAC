@@ -2646,11 +2646,9 @@ enum CXCursorKind {
    */
   CXCursor_OMPParallelMaskedTaskLoopSimdDirective = 304,
 
-  CXCursor_LastStmt = CXCursor_OMPParallelMaskedTaskLoopSimdDirective,
-
   /** Approx directive.
    */
-  CXCursor_ApproxDirective = 296,
+  CXCursor_ApproxDirective = 305,
 
   CXCursor_LastStmt = CXCursor_ApproxDirective,
 
