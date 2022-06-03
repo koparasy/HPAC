@@ -23,6 +23,7 @@
 #include "clang/AST/DeclTemplate.h"
 #include "clang/AST/DeclarationName.h"
 #include "clang/AST/Expr.h"
+#include "clang/AST/ExprApprox.h"
 #include "clang/AST/ExprCXX.h"
 #include "clang/AST/ExprConcepts.h"
 #include "clang/AST/ExprObjC.h"
@@ -5572,6 +5573,10 @@ public:
                                               Expr *ColumnIdx,
                                               SourceLocation RBLoc);
 
+  ExprResult ActOnApproxArraySectionExpr(Expr *Base, SourceLocation LBLoc,
+                                      Expr *LowerBound, SourceLocation ColonLoc,
+                                      Expr *Length, SourceLocation RBLoc);
+
   ExprResult ActOnOMPArraySectionExpr(Expr *Base, SourceLocation LBLoc,
                                       Expr *LowerBound,
                                       SourceLocation ColonLocFirst,
@@ -10769,6 +10774,9 @@ public:
   bool isOpenMPGlobalCapturedDecl(ValueDecl *D, unsigned Level,
                                   unsigned CaptureLevel) const;
 
+  ExprResult PerformApproxImplicitIntegerConversion(SourceLocation Loc,
+                                                        Expr *Op);
+
   ExprResult PerformOpenMPImplicitIntegerConversion(SourceLocation OpLoc,
                                                     Expr *Op);
   /// Called on start of new data sharing attribute block.
@@ -10935,7 +10943,9 @@ public:
                                        approx::ApproxVarListLocTy &Locs,
                                        Expr *Step);
 
-  ApproxClause* ActOnApproxMemoClause(approx::ClauseKind Kind, approx::ApproxVarListLocTy &Locs);
+  ApproxClause* ActOnApproxMemoClause(approx::ClauseKind Kind,
+                                      approx::MemoType MType,
+                                      approx::ApproxVarListLocTy &Locs);
   ApproxClause* ActOnApproxDTClause(approx::ClauseKind Kind, approx::ApproxVarListLocTy &Locs);
   ApproxClause* ActOnApproxNNClause(approx::ClauseKind Kind, approx::ApproxVarListLocTy &Locs);
   ApproxClause* ActOnApproxUserClause(approx::ClauseKind Kind, approx::ApproxVarListLocTy &Locs);
