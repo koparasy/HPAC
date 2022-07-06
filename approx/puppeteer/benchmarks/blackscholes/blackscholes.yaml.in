@@ -1,0 +1,21 @@
+blackscholes:
+  build_dir: ${CMAKE_CURRENT_BINARY_DIR} 
+  cmd: 1 <input> <output>
+  copy:
+  - random_input.bin
+  input:
+  - random_input.bin
+  measure: RUN_TIME:(\d+\.\d+)
+  metric: RE
+  project_dir: ${PROJECT_BINARY_DIR} 
+  quality_pattern: OUTPUT_QUALITY:([0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)
+  root_dir: ${PROJECT_SOURCE_DIR}/analysis_results
+  versions:
+    accurate:
+      build: make ${ACCURATE_BIN} 
+      clean: cmake -P CMakeFiles/${ACCURATE_BIN}.dir/cmake_clean.cmake
+      exe: blackscholes_accurate.exe
+    petrubate:
+      build: make ${ANALYSIS_BIN} 
+      clean: cmake -P CMakeFiles/${ANALYSIS_BIN}.dir/cmake_clean.cmake
+      exe: ${ANALYSIS_BIN}
