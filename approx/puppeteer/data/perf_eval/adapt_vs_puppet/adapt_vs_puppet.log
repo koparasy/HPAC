@@ -1,0 +1,10 @@
+Benchmark:Framework:Peak Memory:Execution Time
+HPCCG:adapt:28999514479:55.3695
+HPCCG:original:104857600:0.558303
+HPCCG:Puppeteer:107251849:0.9982
+Blackscholes:adapt:30008888717:50.2568
+Blackscholes:original:360001143:1.16144 
+Blackscholes:Puppeteer:361420324:3.58353
+DCT:adapt:782945293:0.428602
+DCT:original:6032344:0.0405633
+DCT:Puppeteer:7129175:0.131406
