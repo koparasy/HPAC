@@ -1,0 +1,21 @@
+DCT_IDCT:
+  build_dir: ${CMAKE_CURRENT_BINARY_DIR} 
+  cmd: 512 512 <input> <output>
+  copy:
+  - ${PROJECT_SOURCE_DIR}/inputs/7_1_05.raw
+  input:
+  - ${PROJECT_SOURCE_DIR}/inputs/7_1_05.raw
+  measure: RUN_TIME:(\d+\.\d+)
+  metric: RE
+  project_dir: ${PROJECT_BINARY_DIR} 
+  quality_pattern: OUTPUT_QUALITY:([0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)
+  root_dir: ${PROJECT_SOURCE_DIR}/analysis_results
+  versions:
+    accurate:
+      build: make ${ACCURATE_BIN} 
+      clean: cmake -P CMakeFiles/${ACCURATE_BIN}.dir/cmake_clean.cmake
+      exe: blackscholes_accurate.exe
+    petrubate:
+      build: make ${ANALYSIS_BIN} 
+      clean: cmake -P CMakeFiles/${ANALYSIS_BIN}.dir/cmake_clean.cmake
+      exe: ${ANALYSIS_BIN}
