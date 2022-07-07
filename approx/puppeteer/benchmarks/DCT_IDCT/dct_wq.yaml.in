@@ -9,7 +9,7 @@ DCT_IDCT_WQ:
   metric: RE
   project_dir: ${PROJECT_BINARY_DIR} 
   quality_pattern: OUTPUT_QUALITY:([0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)
-  root_dir: ${PROJECT_SOURCE_DIR}/analysis_results
+  root_dir: ${PROJECT_SOURCE_DIR}/analysis_results/DCT_IDCT_WQ
   versions:
     accurate:
       build: make ${ACCURATE_BIN} 
