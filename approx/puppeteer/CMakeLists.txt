@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
 project(APPROX_BENCH LANGUAGES C CXX)
 
+option(WITH_VISUALIZE "Plot raw data to the respectibe paper figures" OFF)
+option(WITH_SRC_CODE "Create build directories of puppetteer" ON)
+
 IF( NOT CMAKE_BUILD_TYPE )
   SET( CMAKE_BUILD_TYPE Debug FORCE )
 ENDIF()
@@ -12,7 +15,12 @@ set(CMAKE_CXX_EXTENSIONS NO)
 set(CMAKE_UTIL_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(LIBAPPROX_LIB_FILE "ApproxUtil")
 
-#add_subdirectory(Template)
-add_subdirectory(libraries)
-add_subdirectory(benchmarks)
-add_subdirectory(data)
+if (WITH_SRC_CODE)
+  add_subdirectory(libraries)
+  add_subdirectory(benchmarks)
+endif()
+
+if (WITH_VISUALIZE)
+  add_subdirectory(data)
+endif()
+
