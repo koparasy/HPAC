@@ -6,7 +6,6 @@ import sys
 import os
 import yaml
 from pathlib import Path
-from yaml import CLoader
 import subprocess
 import glob
 import math
@@ -273,11 +272,13 @@ def compile(bench, config):
   for k, v in config['versions'].items():
     p = subprocess.run( v['clean'], cwd=build_dir, shell=True)
     if p.returncode != 0:
-      print('could not clean up {build_dir}--{k}')
+      print(f'could not clean up {build_dir}--{k}')
+      print(v['clean'])
+      print(build_dir)
       sys.exit()
     p = subprocess.run( v['build'], cwd=build_dir, shell=True)
     if p.returncode != 0:
-      print('could not clean up {build_dir}--{k}')
+      print(f'could not clean up {build_dir}--{k}')
       sys.exit()
 
 def computeQuality(config, accurate_path, test_path, stdout=None, stderr=None):
@@ -314,7 +315,6 @@ def execute(bench, config, version, outputName, stdout=None, stderr=None, env=No
 def main():
     parser = argparse.ArgumentParser(description='Create Sample Space for Sobol')
     parser.add_argument('-i', '--input', dest='input', type=str, help='Yaml file containing the description of the application', required=True)
-    parser.add_argument('-r', '--root-dir', dest='root', type=str, help='Output directory containing all outpus produced by experiments', required=True)
     parser.add_argument('-t', '--technique', dest='sample_technique', type=str.lower, choices=('vars', 'sobol', 'morris'), help='Technique to use to sample space', required=True)
     parser.add_argument('-e', '--execution-type', dest='type', choices=('setup', 'deploy', 'run', 'analyze', 'visualize', 'clean'), help='Execution type', required=True)
     parser.add_argument('-c', '--cluster-descr', dest='cluster', help='cluster description', required=True)
@@ -327,7 +327,15 @@ def main():
 
     args = parser.parse_args()
 
-    rootDir = os.path.abspath(createDir(args.root))
+    print(args.input)
+    with open(args.input, 'r') as fd:
+        config = yaml.safe_load(fd)
+
+    #This is a hack. 
+    bench = list(config.keys())[0]
+    root_dir = config[bench]['root_dir']
+
+    rootDir = os.path.abspath(createDir(root_dir))
     dbDir = createDir(f'{rootDir}/{args.method}/{args.sample_technique}')
     interm = createDir(f'{dbDir}/interm')
     logDir = createDir(f'{dbDir}/logs')
@@ -340,10 +348,6 @@ def main():
     sample_file = f'{dbDir}/sample/space.json'
     space_file=f'{dbDir}/space.json'
 
-    with open(args.input, 'r') as f:
-        config = yaml.load(f, Loader=CLoader)
-    #This is a hack. 
-    bench = list(config.keys())[0]
 # Setup: Sets an experimentation campaign. Creates directories and samples for our function envaluation. Pe
     if args.type == 'setup':
       if args.petr_descr is None:
@@ -375,7 +379,7 @@ def main():
         input_space_dict = json.load(fd)
 
       with open(args.petr_descr, 'r') as fd:
-        error_descr = yaml.load(fd, Loader=CLoader)
+        error_descr = yaml.safe_load(fd)
 
       index_to_keys, problemDescr = createProblemDescr(input_space_dict, error_method, error_descr)
       print(index_to_keys)
@@ -553,30 +557,5 @@ def main():
 
       with open(f'{dbDir}/analysis.json', 'w') as fd:
         json.dump(sensitivities, fd)
-    elif args.type == 'visualize':
-      viz_dir = createDir(f'{dbDir}/Figures/')
-      with open(f'{dbDir}/index_to_keys.json', 'r') as fd:
-        index_to_keys = json.load(fd)
-
-      regions = [ name[0].replace('_','') for name in index_to_keys ]
-      for v in ['sampled_space', 'transformed_sampled_space']:
-        X = np.load(f'{dbDir}/{v}.npy')
-        columns = X.shape[1]
-        for i in range(columns):
-          x = X[:,i]
-          print(x.shape)
-          df = pd.DataFrame(x,columns=[index_to_keys[i][0]])
-          sizes=set_size(width=textWidth, fraction=0.5)
-          fig, ax = plt.subplots(figsize=sizes)
-          ax = df.plot.hist(bins=100, alpha=0.5, ax = ax)
-          ax.figure.savefig(f'{viz_dir}/{v}_{index_to_keys[i][0]}_dist.pdf',bbox_inches='tight')
-          plt.close()
-      Y = np.load(f'{dbDir}/application_evaluation.npy')
-      df = pd.DataFrame(Y,columns=['Application Output'])
-      sizes=set_size(width=textWidth, fraction=0.5)
-      fig, ax = plt.subplots(figsize=sizes)
-      ax = df.plot.hist(bins=100, alpha=0.5, ax = ax)
-      ax.figure.savefig(f'{viz_dir}/application_out.pdf',bbox_inches='tight')
-      plt.close()
 
 main()
