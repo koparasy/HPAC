@@ -21,6 +21,41 @@ if(NOT WIN32)
   set(BoldWhite   "${Esc}[1;37m")
 endif()
 
+set(OUT_NAME "figure_5")
+file(GLOB LOGS sensitivity/HPCCG/ALL_ITERATIONS/*.json)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/sensitivity)
+message("${Magenta}Emitting ${CMAKE_CURRENT_BINARY_DIR}/sensitivity/${OUT_NAME} ${ColourReset}")
+execute_process(COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/sensitivity/HPCCG/ALL_ITERATIONS/generate_figure.py
+  ${CMAKE_CURRENT_BINARY_DIR}/sensitivity/ ${OUT_NAME} ${LOGS})
+
+set(OUT_NAME "figure_6")
+file(GLOB LOGS sensitivity/HPCCG/SLICE_ITERATIONS/*.json)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/sensitivity)
+message("${Magenta}Emitting ${CMAKE_CURRENT_BINARY_DIR}/sensitivity/${OUT_NAME} ${ColourReset}")
+execute_process(COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/sensitivity/HPCCG/SLICE_ITERATIONS/generate_figure.py
+  ${CMAKE_CURRENT_BINARY_DIR}/sensitivity/ ${OUT_NAME} ${LOGS})
+
+set(OUT_NAME "figure_7")
+file(GLOB LOGS sensitivity/DCT/*.json)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/sensitivity)
+message("${Magenta}Emitting ${CMAKE_CURRENT_BINARY_DIR}/sensitivity/${OUT_NAME} ${ColourReset}")
+execute_process(COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/sensitivity/DCT/generate_figure.py
+  ${CMAKE_CURRENT_BINARY_DIR}/sensitivity/ ${OUT_NAME} ${LOGS})
+
+set(OUT_NAME "figure_8")
+file(GLOB LOGS sensitivity/DCT/*.dat)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/sensitivity)
+message("${Magenta}Emitting ${CMAKE_CURRENT_BINARY_DIR}/sensitivity/${OUT_NAME} ${ColourReset}")
+execute_process(COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/sensitivity/DCT/approximate_plot.py
+  ${CMAKE_CURRENT_BINARY_DIR}/sensitivity/ ${OUT_NAME} ${LOGS})
+
+set(OUT_NAME "figure_9")
+file(GLOB LOGS sensitivity/blackscholes/*.json)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/sensitivity)
+message("${Magenta}Emitting ${CMAKE_CURRENT_BINARY_DIR}/sensitivity/${OUT_NAME} ${ColourReset}")
+execute_process(COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/sensitivity/blackscholes/generate_figure.py
+  ${CMAKE_CURRENT_BINARY_DIR}/sensitivity/ ${OUT_NAME} ${LOGS})
+
 set(OUT_NAME "figure_10")
 file(GLOB LOGS perf_eval/adapt_vs_puppet/*.log)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/perf_eval)

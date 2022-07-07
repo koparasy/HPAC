@@ -26,6 +26,5 @@ target_include_directories(blck_approx PUBLIC ${APPROX_LIB_UTIL_DIR}/)
 target_compile_options(blck_approx PUBLIC ${CMAKE_CXX_FLAGS} -O3 -march=native -fopenmp)
 set_target_properties(blck_approx PROPERTIES LINK_FLAGS "-fopenmp -lapprox")
 
-configure_file(random_input.bin random_input.bin COPYONLY)
 configure_file(blackscholes.yaml.in blackscholes.yaml)
 
