@@ -215,4 +215,4 @@ The erroneous output will we stored in the file 'test.out'. You can compare this
 
 To perform the entire analysis presented in the publication we provide simple bash scripts. The scripts are rensponsible to sample the error space perform the executions and compute the sensitivity values.
 
-
+After configuring the Puppeteer project in each configured benchmark directory ($PROJECT\_BUILD\_DIR) there is an analysis bash script. The script takes two arguments. The first one can be either sobol or morris and instructs Puppeteer to perform GSA analysis with the morris or the sobol technique. The second argument is optional and controls indirectly the number of sample evaluations. The lower the value the less the performed experiments. When the value is not provided we use the values used for our publication analysis.
