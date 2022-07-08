@@ -1,65 +1,68 @@
-# HPAC
+# Puppeteer 
 
-HPAC is comprised of two components, namely the core and the harness. The core implements the approximate 
-programming model. It extends the Clang/LLVM compiler and provides runtime support. The harness 
-facilitates easy exploration of the approximate design space.
+Puppeteer is a set of extensions on the HPAC programming model to allow sensitivity analysis of applications in respect to approximation errors. Puppeteer is comprised of two components. The core, and the sensitivity analysis script. The core implements the programming model and runtime extensions. The sensitivity analysis scripts analyze annotated applications and extracts the sensitivities of the annotated kernels. 
 
-Currently, HPAC supports:
+## Requirements of Puppeteer:
 
-- Perforation:
-   - ini: Drop the first iterations of a for loop.
-   - fini: Drop the last iterations of a for loop.
-   - random: Drop randomly iterations of a for loop.
-   - small: Drop 1 iteration every N iterations.
-   - large: Drop N-1 iterations every N iterations.
-- Memoization:
-   - iACT: Apply approximate memoization based on the inputs of a code region.
-   - TAF: Apply approximate memoization based on the outputs of a code region.
-
-
-## Build Requirements:
-
-HPAC on a x86_64 system has been successfully built with the following dependencies: 
-following free projects:
+Puppeteer on a x86_64 system has been successfully built with the following dependencies: 
 - Ninja 1.9.0
 - CMAKE 3.14
 - gcc 8.3.1
 - python 3.7.6
-- pandas 1.2.2
-- numpy 1.20.1
+- cycler 0.11.0
+- dill 0.3.5.1
+- docopt 0.6.2
+- importlib-metadata 4.12.0
+- kaleido 0.2.1
+- kiwisolver 1.4.3
 - matplotlib 3.3.4
-- seaborn-0.11.1
-- yaml 5.4.1
+- multiprocess 0.70.13
+- numpy 1.20.1
+- pandas 1.2.2
+- pathos 0.2.9
+- Pillow 9.2.0
+- pipreqs 0.4.11
+- plotly 5.9.0
+- pox 0.3.1
+- ppft 1.7.6.5
+- pyparsing 3.0.9
+- python-dateutil 2.8.2
+- pytz 2022.1
+- PyYAML 6.0
+- SALib 1.4.5
+- scipy 1.7.3
+- seaborn 0.11.1
+- six 1.16.0
+- tenacity 8.0.1
+- yarg 0.1.9
+- zipp 3.8.0
 
-## Build HPAC:
 
-### Build HPAC Compiler Extensions
+## Build Puppeteer Core components:
 
-To build the HPAC compiler and all the infrastructure please execute the following commands:
+### Build Puppeteer Compiler Extensions
+
+To build the Puppeteer compiler and runtime extensions please execute the following commands:
 
 ```bash
-git clone git@github.com:koparasy/HPAC.git
+git clone git@github.com:koparasy/HPAC.git -b Puppeteer
 cd HPAC
 ./setup.sh 'PREFIX' 'NUM THREADS' 
 ```
 
-The 'PREFIX' argument defines where to install all the HPAC related binaries and executables. The 'NUM THREADS' parameter
-define how many threads should the installation use. The installation script performs the following actions:
+The 'PREFIX' argument defines where to install all the Puppeteer related binaries and executables. The 'NUM THREADS' parameter defines how many threads should the installation use. The installation script performs the following actions:
 
-1. Configures, builds and installs clang/LLVM/OpenMP including the approximation extensions.
-2. Configures, builds and installs the approximation library. 
-3. Creates a file, called 'hpac_env.sh', at the root of the project which should always be sourced before using HPAC.
-4. Fetches the original applications of our evaluation.
-5. Patches the applications with our extensions.
-6. Configures and compiler the extended approximated applications.
+1. Configures, builds and installs clang/LLVM/OpenMP including the HPAC/Puppeteer extensions.
+2. Configures, builds and installs the HPAC/Puppeteer runtime library. 
+3. Creates a file, called 'puppet_env.sh', at the root of the project which should always be sourced before using HPAC.
 
 The installation process can take a considerable amount of time. In our tested system, the complete 
-installation took ~5 hours. 
+installation took ~2 hours. 
 
+## Replicate Analysis of Puppeteer (Approximate Computing Through the Lens of Uncertainty Quantification)
 
-## Replicate Analysis of SC-22
+Please follow the instructions provided in [a relative link](approx/puppeteer/README.md)
 
-The software and the data are being reviewed for open source release at the moment. Once, the release is done we will update the instructions.
 
 ## Contributing
 To contribute to this repo please send a [pull
