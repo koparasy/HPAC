@@ -91,6 +91,8 @@ export PETRUBATE_FILE=tmp.json
 export PETRUBATE_TYPE=RECORD
 
 ./blck_analysis 1 $PUPPET_ROOT/inputs/random_input.bin test.out
+```
+
 ```json
 {
     "CNDF_1": {
