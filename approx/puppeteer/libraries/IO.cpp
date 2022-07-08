@@ -20,7 +20,7 @@ int ReadQualityFiles(char *accurate, char *test,  void **accVals, void **tstVals
     printf("Test execution results to %d\n", tstElements);
 
     if (accElements != tstElements ){
-        printf("test: failed");
+        printf("test: failed Accurate:%ld, test:%ld\n",accElements, tstElements);
         return -1;
     }
     *elements = accElements;

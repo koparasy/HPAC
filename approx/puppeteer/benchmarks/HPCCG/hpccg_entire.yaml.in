@@ -2,12 +2,12 @@ hpccg_entire:
   build_dir: ${CMAKE_CURRENT_BINARY_DIR} 
   cmd: 20 30 160 <output> 
   input:
-  - 64_64_64 
+  - '64_64_64' 
   measure: RUN_TIME:(\d+\.\d+)
   metric: RE
   project_dir: ${PROJECT_BINARY_DIR} 
   quality_pattern: OUTPUT_QUALITY:([0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)
-  root_dir: ${PROJECT_SOURCE_DIR}/analysis_results/blackscholes/
+  root_dir: ${PROJECT_SOURCE_DIR}/analysis_results/hpccg_entire/
   versions:
     accurate:
       build: make ${ACCURATE_BIN} 

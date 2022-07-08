@@ -18,6 +18,7 @@ target_compile_options(${ACCURATE_BIN} PUBLIC ${CMAKE_CXX_FLAGS} -O3 -march=nati
 set_target_properties(${ACCURATE_BIN} PROPERTIES LINK_FLAGS " -lapprox")
 
 configure_file(hpccg_entire.yaml.in hpccg_entire.yaml)
+configure_file(hpccg_entire.sh.in hpccg_entire_analysis.sh)
 
 set(SRC_FILES "hpccg_slice.cpp")
 
@@ -37,6 +38,7 @@ target_compile_options(${ACCURATE_BIN} PUBLIC ${CMAKE_CXX_FLAGS} -O3 -march=nati
 set_target_properties(${ACCURATE_BIN} PROPERTIES LINK_FLAGS " -lapprox")
 
 configure_file(hpccg_slice.yaml.in hpccg_slice.yaml)
+configure_file(hpccg_slice.sh.in hpccg_slice_analysis.sh)
 
 set(SRC_FILES "hpccg_eval.cpp")
 
