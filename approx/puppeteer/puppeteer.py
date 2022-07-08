@@ -317,13 +317,14 @@ def main():
     parser.add_argument('-i', '--input', dest='input', type=str, help='Yaml file containing the description of the application', required=True)
     parser.add_argument('-t', '--technique', dest='sample_technique', type=str.lower, choices=('vars', 'sobol', 'morris'), help='Technique to use to sample space', required=True)
     parser.add_argument('-e', '--execution-type', dest='type', choices=('setup', 'deploy', 'run', 'analyze', 'visualize', 'clean'), help='Execution type', required=True)
-    parser.add_argument('-c', '--cluster-descr', dest='cluster', help='cluster description', required=True)
+    parser.add_argument('-c', '--cluster-descr', dest='cluster', help='cluster description', required=False)
     parser.add_argument('-w', '--worker-id', dest='wid', help='Id of the current worker')
     parser.add_argument('-s', '--size-work', dest='sw', help='Items required to be checked by worker')
     parser.add_argument('-v', '--vars-input', dest='vars', type=str, help='input file containing the samples of the VARS technique')
     parser.add_argument('-m', '--petrubation-method', type=str.upper, dest='method', choices=('ABS', 'REL', 'DIST'), help='Method to inject errors', required=True)
     parser.add_argument('-p', '--petrubation-description', type=str, dest='petr_descr', help='description of petrubation')
     parser.add_argument('-N', '--number-of-samples', type=int, dest='num_samples', help='Number Of Samples')
+    parser.add_argument('-d', '--deploy', dest='deploy', action='store_true')
 
     args = parser.parse_args()
 
@@ -441,27 +442,31 @@ def main():
       print(f'Number of total Experiments: {len(experiments)} Currently Analyzed: {analyzed}')
       if len(experiments) == analyzed:
         return
-
-      with open(args.cluster, 'r') as fd:
-        cluster = yaml.load(fd, Loader=CLoader)
-      numJobs, TotalWorkers, ExperimentsPerTask, WorkersPerJob = computeNumJobs(len(experiments), cluster)
-      print( numJobs, TotalWorkers, ExperimentsPerTask )
-      jobs = []
-      cmd = createWorkerCMD(args, ExperimentsPerTask)
-      for i in range(numJobs):
-        worker_ids = [str(k) for k in range(i*WorkersPerJob, (i+1)*WorkersPerJob)]
-        script = createBatchScript(nodeDir, f'node_{i}', worker_ids, cmd)
-        job = submitJob(script, WorkersPerJob, cluster['CoresPerTask'])
-        jobs.append(job)
-      deps=','.join([str(j) for j in jobs])
-      dependencies = f'--dependency=afterany:{deps}'
-      submitReduction(nodeDir,nodeDir, dependencies)
+      if args.deploy:
+        with open(args.cluster, 'r') as fd:
+          cluster = yaml.load(fd, Loader=CLoader)
+        numJobs, TotalWorkers, ExperimentsPerTask, WorkersPerJob = computeNumJobs(len(experiments), cluster)
+        print( numJobs, TotalWorkers, ExperimentsPerTask )
+        jobs = []
+        cmd = createWorkerCMD(args, ExperimentsPerTask)
+        for i in range(numJobs):
+          worker_ids = [str(k) for k in range(i*WorkersPerJob, (i+1)*WorkersPerJob)]
+          script = createBatchScript(nodeDir, f'node_{i}', worker_ids, cmd)
+          job = submitJob(script, WorkersPerJob, cluster['CoresPerTask'])
+          jobs.append(job)
+        deps=','.join([str(j) for j in jobs])
+        dependencies = f'--dependency=afterany:{deps}'
+        submitReduction(nodeDir,nodeDir, dependencies)
     elif args.type == 'run':
-      wid = int(args.wid)
-      wSize = int(args.sw)
-
       with open(sample_file, 'r') as fd:
         experiments = json.load(fd)
+
+      if args.deploy:
+        wid = int(args.wid)
+        wSize = int(args.sw)
+      else:
+        wid = 0
+        wSize = len(experiments)
 
       with open(args.cluster, 'r') as fd:
         cluster = yaml.load(fd, Loader=CLoader)
