@@ -158,7 +158,6 @@ void readData(FILE *fd, int **data,   size_t* numElements){
     size_t elements = *numElements;
 
     int *ptr = (int*) malloc (sizeof(int)*elements);
-    printf("Pointer is %ld %p\n", elements, ptr);
     assert(ptr && "Could Not allocate pointer\n");
     *data = ptr;
 

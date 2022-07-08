@@ -282,7 +282,8 @@ def compile(bench, config):
       sys.exit()
 
 def computeQuality(config, accurate_path, test_path, stdout=None, stderr=None):
-  cmd = '%s/build/bin/quality -m %s -a %s -t %s' % (config['root_dir'], config['metric'], accurate_path, test_path)
+  cmd = '%s/bin/quality -m %s -a %s -t %s' % (config['project_dir'], config['metric'], accurate_path, test_path)
+  print(cmd)
   p = subprocess.run( cmd, shell=True, capture_output=True)
   out = p.stdout.decode('utf-8')
   err = p.stderr.decode('utf-8')
@@ -464,14 +465,15 @@ def main():
       if args.deploy:
         wid = int(args.wid)
         wSize = int(args.sw)
+        with open(args.cluster, 'r') as fd:
+          cluster = yaml.load(fd, Loader=CLoader)
+
+        tempDir = cluster['localDirectory']
       else:
         wid = 0
         wSize = len(experiments)
+        tempDir = createDir(f'{dbDir}/scratch')
 
-      with open(args.cluster, 'r') as fd:
-        cluster = yaml.load(fd, Loader=CLoader)
-
-      tempDir = cluster['localDirectory']
 
       start = wid * wSize
       end = min((wid+1)*wSize, len(experiments))

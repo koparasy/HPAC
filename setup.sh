@@ -54,10 +54,18 @@ if [ ! -f $clang_bin ]; then
     popd
     echo "#!/bin/bash" > puppet_env.sh
     echo "export PATH=$prefix/bin/:\$PATH" >> puppet_env.sh
+    echo "export PUPPET_ROOT=$current_dir/approx/puppeteer" >> puppet_env.sh
     echo "export LD_LIBRARY_PATH=$prefix/lib/:\$LD_LIBRARY_PATH" >> puppet_env.sh
     echo "export CC=clang" >> puppet_env.sh
     echo "export CPP=clang++" >> puppet_env.sh
 fi
+
+echo "#!/bin/bash" > puppet_env.sh
+    echo "export PATH=$prefix/bin/:\$PATH" >> puppet_env.sh
+    echo "export PUPPET_ROOT=$current_dir/approx/puppeteer" >> puppet_env.sh
+    echo "export LD_LIBRARY_PATH=$prefix/lib/:\$LD_LIBRARY_PATH" >> puppet_env.sh
+    echo "export CC=clang" >> puppet_env.sh
+    echo "export CPP=clang++" >> puppet_env.sh
 
 source puppet_env.sh
 

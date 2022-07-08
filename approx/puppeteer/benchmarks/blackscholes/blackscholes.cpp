@@ -16,7 +16,7 @@
 #include <omp.h>
 
 //Precision to use for calculations
-#define fptype double 
+#define fptype float 
 
 #define DOUBLE 0
 #define FLOAT 1
@@ -81,7 +81,7 @@ fptype CNDF ( fptype InputX )
     // Compute NPrimeX term common to both four & six decimal accuracy calcs
     temp = -half * InputX * InputX;
 
-    expValues = expf(temp);
+    expValues = exp(temp);
 
     xNPrimeofX = expValues;
     xNPrimeofX = xNPrimeofX * inv_sqrt_2xPI;
@@ -185,7 +185,7 @@ fptype BlkSchlsEqEuroNoDiv( fptype sptprice,
     temp = -(rate*time);
 
 #pragma approx label("EXP") petrubate(out) out(FutureValueX)
-    FutureValueX =  ( expf( temp  ) );
+    FutureValueX =  ( exp( temp  ) );
 
     FutureValueX *=strike;
 

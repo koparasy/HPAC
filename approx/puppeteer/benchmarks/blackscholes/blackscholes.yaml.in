@@ -6,7 +6,7 @@ blackscholes:
   input:
   - ${PROJECT_SOURCE_DIR}/inputs/random_input.bin
   measure: RUN_TIME:(\d+\.\d+)
-  metric: RE
+  metric: MAPE 
   project_dir: ${PROJECT_BINARY_DIR} 
   quality_pattern: OUTPUT_QUALITY:([0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)
   root_dir: ${PROJECT_SOURCE_DIR}/analysis_results/blackscholes/

@@ -14,7 +14,7 @@ DCT_IDCT_WQ:
     accurate:
       build: make ${ACCURATE_BIN} 
       clean: cmake -P CMakeFiles/${ACCURATE_BIN}.dir/cmake_clean.cmake
-      exe: blackscholes_accurate.exe
+      exe:  ${ACCURATE_BIN}
     petrubate:
       build: make ${ANALYSIS_BIN} 
       clean: cmake -P CMakeFiles/${ANALYSIS_BIN}.dir/cmake_clean.cmake

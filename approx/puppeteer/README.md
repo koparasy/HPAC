@@ -209,3 +209,10 @@ export PETRUBATE_TYPE=PETRUBATE
 ```
 
 The erroneous output will we stored in the file 'test.out'. You can compare this output with the 'accurate.out' using the quality utility.
+
+
+## Full fledged sensitiviy analysis using Puppeteer
+
+To perform the entire analysis presented in the publication we provide simple bash scripts. The scripts are rensponsible to sample the error space perform the executions and compute the sensitivity values.
+
+
