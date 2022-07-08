@@ -54,14 +54,14 @@ The 'PREFIX' argument defines where to install all the Puppeteer related binarie
 
 1. Configures, builds and installs clang/LLVM/OpenMP including the HPAC/Puppeteer extensions.
 2. Configures, builds and installs the HPAC/Puppeteer runtime library. 
-3. Creates a file, called 'puppet_env.sh', at the root of the project which should always be sourced before using HPAC.
+3. Creates a file, called 'puppet_env.sh', at the root of the project which should always be sourced before using HPAC/Puppeteer.
 
 The installation process can take a considerable amount of time. In our tested system, the complete 
 installation took ~2 hours. 
 
 ## Replicate Analysis of Puppeteer (Approximate Computing Through the Lens of Uncertainty Quantification)
 
-Please follow the instructions provided in [a relative link](approx/puppeteer/README.md)
+Please follow the instructions provided [here](approx/puppeteer/README.md)
 
 
 ## Contributing
@@ -71,9 +71,7 @@ develop branch of this repo.
 
 ## Authors
 
-This code was created by Konstantinos Parasyris (parasyris1@llnl.gov) and Giorgis Georgakoudis,
-(georgakoudis1@llnl.gov), assisted with design input from Harshitha Menon (gopalakrishn1@llnl.gov).
-
+This code was created by Konstantinos Parasyris (parasyris1@llnl.gov)
 
 ## License
 
