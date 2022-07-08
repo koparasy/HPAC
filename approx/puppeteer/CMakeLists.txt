@@ -5,7 +5,7 @@ option(WITH_VISUALIZE "Plot raw data to the respectibe paper figures" OFF)
 option(WITH_SRC_CODE "Create build directories of puppetteer" ON)
 
 IF( NOT CMAKE_BUILD_TYPE )
-  SET( CMAKE_BUILD_TYPE Debug FORCE )
+  SET( CMAKE_BUILD_TYPE Release FORCE )
 ENDIF()
 
 set(CMAKE_SKIP_BUILD_RPATH FALSE)
