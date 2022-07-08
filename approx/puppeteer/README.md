@@ -45,7 +45,7 @@ git lfs pull
 
 Next we need to configure our project using cmake. The $PUPPET_ROOT environment variable is set by the
 'puppet\_env.sh' file.
-```
+```bash
 mkdir $PROJECT_BUILD_DIR 
 cd $PROJECT_BUILD_DIR 
 cmake $PUPPET_ROOT
@@ -54,7 +54,7 @@ cmake $PUPPET_ROOT
 These commands configure our project and also update the configuration files (\*.yaml.in). 
 You can set any path in the variable "$PROJECT\_BUILD\_DIR".
 To build a specific benchmark (for example blackscholes) perform the following steps:
-```
+```bash
 cd $PROJECT_BUILD_DIR
 cd benchmarks/blackscholes
 make
@@ -64,19 +64,19 @@ The command will create three binaries (blck\_accurate blck\_analysis  blck\_app
 blck\_accurate does not contain any Puppeteer extensions. Whereas the blck\_analysis does. Finally, the blck\_approx binary executes is the approximate version of blackscholes. The rest of the benchmarks create binaries with similar suffixes. 
 
 To run the 'accurate' blackscholes executable issue the following command:
-```
+```bash
 ./blck_accurate 1 $PUPPET_ROOT/inputs/random_input.bin accurate.out
 ```
 
 The command executes the binary and stores the output in the file accurate. Respectively, one can execute the approximate version by issuing the following command:
 
-```
+```bash
 ./blck_approx 1 $PUPPET_ROOT/inputs/random_input.bin approx.out
 ```
 
 Both execution list the execution time. To compute the error you can issue the command:
 
-```
+```bash
 $PROJECT_BUILD_DIR/bin/quality -m RE -a ./accurate.out -t approx.out
 ```
 
@@ -86,7 +86,7 @@ The option '-m' RE instructs our framework to compute the equation 4 between the
 
 To perform a trace execution of the analysis binary you can issue the following command.
 
-```
+```bash
 export PETRUBATE_FILE=tmp.json
 export PETRUBATE_TYPE=RECORD
 
