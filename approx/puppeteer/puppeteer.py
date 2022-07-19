@@ -297,7 +297,7 @@ def computeQuality(config, accurate_path, test_path, stdout=None, stderr=None):
   return out,err
 
 def execute(bench, config, version, outputName, stdout=None, stderr=None, env=None):
-  cmd = '%s %s' % (config['versions'][version]['exe'], config['cmd'])
+  cmd = './%s %s' % (config['versions'][version]['exe'], config['cmd'])
   cmd = cmd.replace('<input>', config['input'][0])
   cmd = cmd.replace('<output>', outputName)
   print(cmd)
