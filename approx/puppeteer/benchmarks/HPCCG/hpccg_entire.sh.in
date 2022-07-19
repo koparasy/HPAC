@@ -1,0 +1,30 @@
+#!/bin/bash
+
+if [[ $# -eq 0 ]]; then
+  echo "Please specify UQ technique (morris|sobol)"
+  exit
+fi
+
+tech=$1
+
+if [[ "$tech" != "sobol" ]]; then
+  if [[ "$tech" != "morris" ]]; then
+    echo "Technique must be either sobol or morris"
+    exit
+  fi
+fi
+
+if [[ $# -eq 2 ]]; then
+  N=$2
+elif [[ "$tech" == "sobol" ]]; then
+  N=512
+else
+  N=128
+fi
+
+python ${PROJECT_SOURCE_DIR}/puppeteer.py -i ${CMAKE_CURRENT_BINARY_DIR}/hpccg_entire.yaml -t $tech -e setup -m rel -p ${PROJECT_SOURCE_DIR}/errors/hpccg.yaml -N $N
+python ${PROJECT_SOURCE_DIR}/puppeteer.py -i ${CMAKE_CURRENT_BINARY_DIR}/hpccg_entire.yaml -t $tech -e deploy -m rel -p ${PROJECT_SOURCE_DIR}/errors/hpccg.yaml -N $N
+python ${PROJECT_SOURCE_DIR}/puppeteer.py -i ${CMAKE_CURRENT_BINARY_DIR}/hpccg_entire.yaml -t $tech -e run -m rel -p ${PROJECT_SOURCE_DIR}/errors/hpccg.yaml -N $N
+python ${PROJECT_SOURCE_DIR}/puppeteer.py -i ${CMAKE_CURRENT_BINARY_DIR}/hpccg_entire.yaml -t $tech -e deploy -m rel -p ${PROJECT_SOURCE_DIR}/errors/hpccg.yaml -N $N
+python ${PROJECT_SOURCE_DIR}/puppeteer.py -i ${CMAKE_CURRENT_BINARY_DIR}/hpccg_entire.yaml -t $tech -e analyze -m rel -p ${PROJECT_SOURCE_DIR}/errors/hpccg.yaml -N $N
+
