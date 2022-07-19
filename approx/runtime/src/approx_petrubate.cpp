@@ -208,7 +208,7 @@ PetrubateMap::petrubate(uintptr_t accurate, approx_var_info_t *arguments,
     thread_local int prev_id = 0;
     for (int i = 0; i < last_index_size; i++){
         if (strcmp(label, regionNames[prev_id]) == 0){
-            rId = i;
+            rId = prev_id;
             break;
         }
         prev_id += 1;
@@ -216,9 +216,9 @@ PetrubateMap::petrubate(uintptr_t accurate, approx_var_info_t *arguments,
     }
     prev_id = (prev_id +1) % last_index_size;
     if ( rId == -1 ){
-        std::cout<< "Error region is not recorded however I am in petrubate-mode\n";
-        exit(-1);
+	return;
     }
+
 
     for (int p = 0; p < num_arguments; p++){
         approx_petru_var& var = region[rId][p];
