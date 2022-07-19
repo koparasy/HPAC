@@ -1,32 +1,25 @@
-all:
-  exponent_space: True
-  lower_bound: -28
-  upper_bound:  28
-  base: 2
-  max_error: -10
-  error_direction: 'Both'
-CNDF1:
+CNDF_1:
   exponent_space: True
   lower_bound: -25
   upper_bound:  25
   base: 2
   max_error: 0
   error_direction: 'Both'
-CNDF2:
+CNDF_2:
   exponent_space: True
   lower_bound: -25
   upper_bound:  25
   base: 2
   max_error: 0
   error_direction: 'Both'
-LOG:
+LOG_1:
   exponent_space: True
   lower_bound: -27
   upper_bound:  27
   base: 2
   max_error: -4
   error_direction: 'Both'
-SQRT:
+SQRT_1:
   exponent_space: True
   lower_bound: -20
   upper_bound:  20
