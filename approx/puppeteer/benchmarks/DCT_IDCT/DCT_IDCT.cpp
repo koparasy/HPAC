@@ -65,16 +65,16 @@ void DCT(unsigned char **img, double **dct, int ROWS, int COLS) {
     for (c = 0; c < x_blocks; c++)
       for (i = 0; i < 8; i++)
         for (j = 0; j < 8; j++) {
+          double sum = 0;
           snprintf(label,100,"%s",coeff_name[i][j]); 
-#pragma approx label(label) petrubate(out) out(dct[r * 8 + i][c * 8 + j])
+#pragma approx label(label) petrubate(out) out(sum)
           {
-            double sum = 0;
             for (x = 0; x < 8; x++)
               for (y = 0; y < 8; y++)
                 sum += (img[r * 8 + x][c * 8 + y] - 128) * COS[x][i] * COS[y][j];
             sum *= C[i] * C[j] * 0.25;
-            dct[r * 8 + i][c * 8 + j] = sum;
           }
+          dct[r * 8 + i][c * 8 + j] = sum;
       }
 }
 
