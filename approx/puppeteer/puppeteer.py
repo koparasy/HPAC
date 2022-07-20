@@ -499,6 +499,7 @@ def main():
         else:
           runtime=-1
         out, err = computeQuality(config[bench], f'{interm}/accurate.out', f'{tempDir}/qoi_{wid}.out', f'{logDir}/quality_{wid}.out', f'{logDir}/quality_{wid}.err')
+        print(out)
         items = re.search(config[bench]['quality_pattern'],out)
         qual= list(items.groups())
         quality = [q for q in qual if q]

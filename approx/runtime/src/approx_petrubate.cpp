@@ -207,14 +207,12 @@ PetrubateMap::petrubate(uintptr_t accurate, approx_var_info_t *arguments,
     int rId = -1;
     thread_local int prev_id = 0;
     for (int i = 0; i < last_index_size; i++){
-        if (strcmp(label, regionNames[prev_id]) == 0){
-            rId = prev_id;
+        if (strcmp(label, regionNames[i]) == 0){
+            rId = i;
             break;
         }
-        prev_id += 1;
-        prev_id = prev_id % last_index_size;
     }
-    prev_id = (prev_id +1) % last_index_size;
+
     if ( rId == -1 ){
 	return;
     }
