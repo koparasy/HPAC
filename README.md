@@ -42,6 +42,52 @@ Puppeteer on a x86_64 system has been successfully built with the following depe
 
 ### Build Puppeteer Compiler Extensions
 
+#### Download container with Puppeteer
+
+We provide a public container image with Puppeteer already installed. To download the image please issue:
+
+```bash
+docker pull koparasy/puppeteer-sc22:release
+```
+
+Once the image is downloaded you can get check your images:
+
+```bash
+docker images
+```
+
+There should be an entry which looks like:
+
+```bash
+REPOSITORY                TAG                 IMAGE ID            CREATED             SIZE
+koparasy/puppeteer-sc22   release             <IMAGE ID>          4 hours ago         3.52GB
+```
+
+To start a container with the downloaded image execute the following:
+
+```bash
+docker run -dit koparasy/puppeteer-sc22:release
+```
+
+This starts a container. Finally to connect to the container issue the following command:
+
+```bash
+docker exec -it <IMAGE ID> /bin/bash
+```
+
+Replace the <IMAGE ID> with the ID provided in the docker images command.
+
+In the container he source code of Puppeteer is under '/HPAC' and the installation directory is
+under the '/PUPPET\_INSTALL' directory. 
+
+To setup all the required paths please issue the following command:
+
+```bash
+source /HPAC/puppet_env.sh
+```
+
+#### Build Puppeteer from source
+
 To build the Puppeteer compiler and runtime extensions please execute the following commands:
 
 ```bash
