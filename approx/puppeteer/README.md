@@ -146,6 +146,8 @@ export PETRUBATE_TYPE=RECORD
 
 The json file simillar to the one presented in Listing 4 of the original publication.
 
+### Perform Deploy mode using Puppeteer
+
 To perform an execution in which we inject an error using Equation 2 please modify tmp.json to:
 
 ```json
@@ -264,7 +266,7 @@ A similar script executes the analysis for each of the benchmarks. The results a
 To run the approximate version of dct you can execute the following command:
 
 ```bash
-${PUPPET\_ROOT}/build/benchmarks/DCT_IDCT/dct_approx_nq 512 512 inputs/7_1_05.raw out 30
+${PUPPET_ROOT}/build/benchmarks/DCT_IDCT/dct_approx_nq 512 512 inputs/7_1_05.raw out 30
 ```
 
 That will perforate the 30 kernels that are the least sensitive.
@@ -272,6 +274,6 @@ That will perforate the 30 kernels that are the least sensitive.
 
 To execute the approximate version of HPCCG execute the following command:
 ```bash
-${PUPPET\_ROOT}/build/benchmarks/HPCCG/hpccg_eval 20 30 160 test 1e-8 70 3
+${PUPPET_ROOT}/build/benchmarks/HPCCG/hpccg_eval 20 30 160 test 1e-8 70 3
 ```
 
