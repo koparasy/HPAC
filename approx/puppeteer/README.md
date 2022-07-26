@@ -6,7 +6,7 @@ This directory contains the source code of the analyzed benchmarks, the approxim
 
 We are mainly interested in the following directories :
 - data
-- libraries 
+- libraries
 - benchmarks
 - errors
 
@@ -17,7 +17,7 @@ The 'data' directory contains all the date we used in our published work. To vis
 ```bash
 mkdir visualize
 cd visualize
-cmake -DWITH_VISUALIZE='On' ../ 
+cmake -DWITH_VISUALIZE='On' ../
 ```
 
 These commands will create all the plots of our work. "cmake" outputs the path to each plot.
@@ -33,25 +33,26 @@ Moreover it contains configuration files named with a suffix 'yaml.in'. The conf
 
 ### The 'errors' directory
 
-The directory contains a description of the error domain of each application. The error domain is used by the sensitivity analysis script to sample error points and perform perturbation on the requested kernels. 
+The directory contains a description of the error domain of each application. The error domain is used by the sensitivity analysis script to sample error points and perform perturbation on the requested kernels.
 
 ## Build benchmarks and perform simple executions.
 
-As a first step we need to pull the input files we used for our analysis. To do so, please issue the following command:
+As a first step we need to pull the input files we used for our analysis. To do so, please issue the following command (this step is already performed in the provided container):
 
 ```bash
 git lfs pull
 ```
 
-Next we need to configure our project using cmake. The $PUPPET_ROOT environment variable is set by the
+Next we need to configure our project using cmake. The $PUPPET\_ROOT environment variable is set by the
 'puppet\_env.sh' file.
 ```bash
-mkdir $PROJECT_BUILD_DIR 
-cd $PROJECT_BUILD_DIR 
+export PROJECT_BUILD_DIR=${PUPPET_ROOT}/build/
+mkdir $PROJECT_BUILD_DIR
+cd $PROJECT_BUILD_DIR
 cmake $PUPPET_ROOT
 ```
 
-These commands configure our project and also update the configuration files (\*.yaml.in). 
+These commands configure our project and also update the configuration files (\*.yaml.in).
 You can set any path in the variable "$PROJECT\_BUILD\_DIR".
 To build a specific benchmark (for example blackscholes) perform the following steps:
 ```bash
@@ -61,7 +62,7 @@ make
 ```
 
 The command will create three binaries (blck\_accurate blck\_analysis  blck\_approx).
-blck\_accurate does not contain any Puppeteer extensions. Whereas the blck\_analysis does. Finally, the blck\_approx binary executes is the approximate version of blackscholes. The rest of the benchmarks create binaries with similar suffixes. 
+blck\_accurate does not contain any Puppeteer extensions. Whereas the blck\_analysis does. Finally, the blck\_approx binary executes is the approximate version of blackscholes. The rest of the benchmarks create binaries with similar suffixes.
 
 To run the 'accurate' blackscholes executable issue the following command:
 ```bash
@@ -215,4 +216,62 @@ The erroneous output will we stored in the file 'test.out'. You can compare this
 
 To perform the entire analysis presented in the publication we provide simple bash scripts. The scripts are rensponsible to sample the error space perform the executions and compute the sensitivity values.
 
-After configuring the Puppeteer project in each configured benchmark directory ($PROJECT\_BUILD\_DIR) there is an analysis bash script. The script takes two arguments. The first one can be either sobol or morris and instructs Puppeteer to perform GSA analysis with the morris or the sobol technique. The second argument is optional and controls indirectly the number of sample evaluations. The lower the value the less the performed experiments. When the value is not provided we use the values used for our publication analysis.
+After configuring the Puppeteer project in each configured benchmark directory ($PROJECT\_BUILD\_DIR)/benchmarks there is an analysis bash script. The script takes two arguments.
+The first one can be either sobol or morris and instructs Puppeteer to perform GSA analysis with the morris or the sobol technique.
+The second argument is optional and controls indirectly the number of sample evaluations. The
+lower the value the less the performed experiments. When the value is not provided we use the values used for our publication analysis.
+
+For example, (assuming you configured Puppeteer under the ${PUPPET\_ROOT}/build directory) you can execute a small analysis of the blackscholes benchmark you can issue the following command:
+
+```bash
+${PUPPET_ROOT}/build/benchmarks/blackscholes/blackscholes_analysis.sh sobol 8
+```
+
+The analysis results are stored under the directory '${PUPPET\_ROOT}/analysis\_results/blackscholes/REL/sobol/' inside the file analysis.json
+
+```json
+{
+  "Sensitivity": [
+    0.8985655288861357,
+    0.00822463447158515,
+    0.005764415934503682,
+    2.5335626862486145e-07,
+    5.1822546789441605e-05
+  ],
+  "Confidence": [
+    0.7391175686019008,
+    0.5992965530611803,
+    0.5966521366464561,
+    4.928641227631308e-07,
+    0.00807271477098807
+  ],
+  "names": [
+    "CNDF_1",
+    "CNDF_2",
+    "EXP",
+    "LOG_1",
+    "SQRT_1"
+  ]
+}
+```
+
+Based on this information the kernels with names 'LOG\_1' and 'SQRT\_1' are the least sensitive.
+You can open the file ${PUPPET\_ROOT}/benchmarks/blackscholes/blackscholes.cpp and find the kernels with such labels (line 156, 160). Based on this information
+we create the approximate version (${PUPPET\_ROOT}/benchmarks/blackscholes/blackscholes\_eval.cpp) that calls the fastexp and fastsqrt functions in lines 167, 172.
+
+A similar script executes the analysis for each of the benchmarks. The results are always stored under ${PUPPET\_ROOT}/analysis\_results/'BENCHMARK\_NAME'/REL/sobol|morris.
+
+To run the approximate version of dct you can execute the following command:
+
+```bash
+${PUPPET\_ROOT}/build/benchmarks/DCT_IDCT/dct_approx_nq 512 512 inputs/7_1_05.raw out 30
+```
+
+That will perforate the 30 kernels that are the least sensitive.
+
+
+To execute the approximate version of HPCCG execute the following command:
+```bash
+${PUPPET\_ROOT}/build/benchmarks/HPCCG/hpccg_eval 20 30 160 test 1e-8 70 3
+```
+
