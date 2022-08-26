@@ -30,6 +30,10 @@ set_target_properties(approx PROPERTIES
     LINK_FLAGS ""
     LINKER_LANGUAGE ${LIBAPPROX_LINKER_LANGUAGE})
 
+target_compile_definitions(approx PUBLIC ${HPAC_APP_DEFINES})
+target_include_directories(approx PRIVATE ${HPAC_APP_INCLUDES})
+target_link_directories(approx PRIVATE ${HPAC_APP_LIB_DIRS})
+target_link_libraries(approx PUBLIC ${HPAC_APP_LIBRARIES})
 target_link_libraries(approx PRIVATE ${CMAKE_DL_LIBS})
 
 message("PACKAGE VERSION is: ${PACKAGE_VERSION}")

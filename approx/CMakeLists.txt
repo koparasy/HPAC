@@ -10,6 +10,7 @@ set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/;${CMAKE_MODULE_PATH}")
 
 find_package(OpenMP REQUIRED)
+option(WITH_TORCH       "Use C/C++ Torch interface for Surrogate Model Inference" OFF)
 
 if (OPENMP_FOUND)
     set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
@@ -48,5 +49,18 @@ set(APPROX_INSTALL_LIBDIR "lib${LLVM_LIBDIR_SUFFIX}")
 set(APPROX_LIBDIR_SUFFIX "" CACHE STRING
 "Suffix of lib installation directory, e.g. 64 => lib64")
 set(APPROX_INSTALL_LIBDIR "lib${APPROX_LIBDIR_SUFFIX}")
+
+
+if (WITH_TORCH)
+  find_package(Torch REQUIRED)
+  message("Torch Includes: ${TORCH_INCLUDE_DIRS}")
+  message("Torch Libraries: ${TORCH_LIBRARIES}")
+
+  list(APPEND HPAC_APP_INCLUDES "${TORCH_INCLUDE_DIRS}")
+  list(APPEND HPAC_APP_LIBRARIES "${TORCH_LIBRARIES}")
+  list(APPEND HPAC_APP_DEFINES "-D__ENABLE_TORCH__")
+endif()
+
+
 
 add_subdirectory(runtime)
