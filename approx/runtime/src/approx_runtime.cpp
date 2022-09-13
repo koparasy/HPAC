@@ -25,6 +25,7 @@
 #include "approx_data_util.h"
 #include "approx_internal.h"
 
+#include <torch/script.h>  
 
 using namespace std;
 
